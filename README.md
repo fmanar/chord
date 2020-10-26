@@ -10,3 +10,8 @@ Frets - a listing of fretboard positions (i.e. a string+fret tuple)
 
 ## Defining Pitch
 Pitches are denoted by integers counting half-steps.  0 is middle C (C4, MIDI note 60) by convention.
+
+## Todo
+- finish functionality...
+- create setup.py so pip can install
+- make members of Voicing "properties" so that _update() is called when they change
