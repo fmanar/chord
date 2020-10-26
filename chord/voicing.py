@@ -1,6 +1,7 @@
 class Voicing:
     '''An array-like set of tones decribing a chord voicing.
 
+    Uses parallel arrays.  Pythonic?
     '''
     def __init__(self, formula, order=None, octave=None, inversion=0, root=0):
         self.formula = formula
@@ -22,17 +23,13 @@ class Voicing:
 
         self.inversion = inversion
         self.root = root
+        self.notes = [0 for _ in self.order]
         self._update()
 
     def _update(self):
-        self.notes = [
-                self.root 
-                + self.formula[
-                    (tone + self.inversion) % len(self.formula)
-                    ] 
-                + 12*octave
-                for tone, octave in zip(self.order, self.octave)
-        ]
+        for i in range(len(self.order)):
+            formula_index = (self.order[i] + self.inversion) % len(self.formula)
+            self.notes[i] = self.root + self.formula[formula_index] + 12*self.octave[i]
 
     def __len__(self):
         return len(self.notes)
