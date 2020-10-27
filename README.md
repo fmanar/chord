@@ -3,8 +3,11 @@ A chord chart generator for stringed instruments.  For the computing, inverting,
 
 ## Structure
 Pattern - a set of relative semitones defining the notes in the chord/scale.  Just a List of tones.
+
 Voicing - an ordering of chord tones, inversion number, root. 
+
 Instrument - defines string tunings
+
 Frets - a listing of fretboard positions (i.e. a string+fret tuple)
     created from a voicing, instrument, and string selection.
 
@@ -12,6 +15,5 @@ Frets - a listing of fretboard positions (i.e. a string+fret tuple)
 Pitches are denoted by integers counting half-steps.  0 is middle C (C4, MIDI note 60) by convention.
 
 ## Todo
-- finish functionality...
 - create setup.py so pip can install
 - make members of Voicing "properties" so that _update() is called when they change
