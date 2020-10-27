@@ -2,6 +2,16 @@ class Voicing:
     '''An array-like set of tones decribing a chord voicing.
 
     Uses parallel arrays.  Pythonic?
+
+    Attributes:
+        formula (list of int): the chord or scale tones relative to the root.
+        order (list of int): the ordering of the formula tones as formula 
+            indexes.  If not supplied, the order defaults to the formula.
+        octave (list of int): the octave to place the formula tones in as a 
+            parallel array with order.  If not supplied, defaults to whatever 
+            is required to make the pitch sequence monotonically increasing.
+        inversion (int): sets the formula tone increment
+        root (int): sets the root note
     '''
     def __init__(self, formula, order=None, octave=None, inversion=0, root=0):
         self.formula = formula
