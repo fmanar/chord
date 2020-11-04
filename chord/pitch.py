@@ -76,7 +76,10 @@ class Pitch:
         match = re.match('([a-zA-Z][#b]?)(\d*)', name)
         if match:
             name = match.group(1).lower()
-            octave = int(match.group(2).lower())
+            try:
+                octave = int(match.group(2).lower())
+            except:
+                octave = -1
             self.pitch = d[name] + 12*(octave + 1)
         else:
             raise ValueError
