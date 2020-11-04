@@ -20,5 +20,4 @@ print(f'voicing: {voicing}')
 print(f'strings: {strings}')
 print(f'inv:     {inversion}')
 
-pitches = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
 func.display_chord(chord, voicing, strings, inversion, tuning)
