@@ -1,0 +1,103 @@
+import re
+
+class Pitch:
+    '''Stores a single pitch.
+
+    Pitch is represented as an integer number of half-steps above a reference.
+    The absolute scale corresponds the MIDI tuning standard with C4=60.
+    Support for addition and subtraction is provided.  Attributes are 
+    erased if two notes have disimilar values.
+
+    Attributes:
+        pitch (int): the pitch
+        attrib (dict): dictionary of additional attributes
+
+    '''
+    def __init__(self, value, attrib={}):
+        if isinstance(value, int):
+            self.pitch = value
+        elif isinstance(value, str):
+            self.pitch = 0
+            self.set_name(value)
+        self.attrib = attrib
+
+    @classmethod
+    def make(cls, value):
+        '''A factory method.'''
+        if isinstance(value, cls):
+            return value
+        else:
+            return Pitch(value)
+    
+    def get_name(self, absolute=False, flats=False):
+        names_sharp = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+        names_flat  = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B']
+        octave = (self.pitch // 12) - 1
+        pitch = self.pitch % 12
+
+        if flats:
+            name = names_flat[pitch]
+        else:
+            name = names_sharp[pitch]
+
+        if absolute:
+            name += f'{octave}'
+
+        return name
+
+    def set_name(self, name):
+        d = {'c':0, 'c#':1, 'db':1, 'd':2, 'd#':3, 'eb':3, 'e':4, 'f':5,
+                'f#':6, 'gb':6, 'g':7, 'g#':8, 'ab':8, 'a':9, 'a#':10, 'bb':10,
+                'b':11,
+        }
+        match = re.match('([a-zA-Z][#b]?)(\d*)', name)
+        if match:
+            name = match.group(1).lower()
+            octave = int(match.group(2).lower())
+            self.pitch = d[name] + 12*(octave + 1)
+        else:
+            raise ValueError
+
+    def __str__(self):
+        return f'{self.pitch}'
+    
+    def __repr__(self):
+        return f'Pitch({self.pitch}, {self.attrib})'
+
+    def __add__(self, other):
+        if isinstance(other, Pitch):
+            return Pitch(self.pitch + other.pitch)
+        elif isinstance(other, int):
+            return Pitch(self.pitch + other)
+        else:
+            return NotImplemented
+
+    def __sub__(self, other):
+        if isinstance(other, Pitch):
+            return Pitch(self.pitch - other.pitch)
+        elif isinstance(other, int):
+            return Pitch(self.pitch - other)
+        else:
+            return NotImplemented
+
+    def __radd__(self, other):
+        return self + other
+
+    def __rsub__(self, other):
+        return self - other
+
+    def __iadd__(self, other):
+        if isinstance(other, Pitch):
+            self.pitch += other.pitch
+        elif isinstance(other, int):
+            self.pitch += other
+        else:
+            return NotImplemented
+        
+    def __isub__(self, other):
+        if isinstance(other, Pitch):
+            self.pitch -= other.pitch
+        elif isinstance(other, int):
+            self.pitch -= other
+        else:
+            return NotImplemented

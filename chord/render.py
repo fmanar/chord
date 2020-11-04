@@ -5,8 +5,8 @@ def to_text(pos):
     s_min = pos[0].string
     s_max = pos[-1].string
     pos.sort(key=lambda p: p.fret)
-    f_min = pos[0].string
-    f_max = pos[-1].string
+    f_min = pos[0].fret
+    f_max = pos[-1].fret
 
     header = '┌' + '┬'*(s_max - s_min - 1) + '┐'
     footer = '└' + '┴'*(s_max - s_min - 1) + '┘'

@@ -11,6 +11,7 @@ A chord chart generator for stringed instruments.  For the computing, inverting,
 Pitches are denoted by integers counting half-steps.  0 is middle C (C4, MIDI note 60) by convention.
 
 ## Todo
+- Need to create classes for note and chord if things are going to support attributes.
 - create setup.py so pip can install
 - make members of Voicing "properties" so that _update() is called when they change
 - change positions and notes to dictionaries?
