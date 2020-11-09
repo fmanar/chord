@@ -1,3 +1,4 @@
+import collections.abc
 import functools
 import re
 
@@ -29,7 +30,7 @@ class Pitch:
             self.pitch = 0
             self.set_name(value)
         else:
-            raise ValueError
+            raise TypeError('Could not form pitch from value.')
         self.attrib = attrib
 
     @classmethod
@@ -55,12 +56,12 @@ class Pitch:
         names_flat  = ['C', 'Db', 'D', 'Eb', 'E', 'F', 
                 'Gb', 'G', 'Ab', 'A', 'Bb', 'B']
         octave = self.get_octave()
-        pitch = self.get_class()
+        pc = self.get_class()
 
         if flats:
-            name = names_flat[pitch]
+            name = names_flat[pc]
         else:
-            name = names_sharp[pitch]
+            name = names_sharp[pc]
 
         if absolute:
             name += f'{octave}'
@@ -89,6 +90,9 @@ class Pitch:
     
     def __repr__(self):
         return f'Pitch({self.pitch}, {self.attrib})'
+
+    def __int__(self):
+        return self.pitch
 
     def __eq__(self, other):
         if not isinstance(other, Pitch):
@@ -141,3 +145,53 @@ class Pitch:
             return self
         else:
             return NotImplemented
+
+    def __neg__(self):
+        return Pitch(-self.pitch, self.attrib)
+
+
+class PitchSequence(collections.abc.MutableSequence):
+    '''Stores an list of pitches.
+
+    A wrapper around a standard list so that integers and note names are cast
+    to Pitch upon entry into the list.
+
+    '''
+    def __init__(self, pitches=None, attrib={}):
+        if pitches:
+            try:
+                self._pitches = [Pitch.make(p) for p in pitches]
+            except TypeError:
+                self._pitches = Pitch.make(pitches)
+        else:
+            self._pitches = []
+        self.attrib = attrib
+    
+    def transposed(self, delta):
+        return PitchSequence([p + delta for p in self._pitches], self.attrib)
+
+    @classmethod
+    def make(cls, value):
+        '''A factory method to allow easy casting.'''
+        if isinstance(value, cls):
+            return value
+        else:
+            return PitchSequence(value)
+
+    def insert(self, i, x):
+        self._pitches.insert(i, Pitch.make(x))
+
+    def __len__(self):
+        return self._pitches.__len__()
+
+    def __getitem__(self, i):
+        return self._pitches.__getitem__(i)
+
+    def __setitem__(self, i, x):
+        self._pitches.__setitem__(i, Pitch.make(x))
+
+    def __delitem__(self, i):
+        self._pitches.__delitem__(i)
+
+    def __str__(self):
+        return self._pitches.__str__()

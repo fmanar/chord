@@ -1,10 +1,8 @@
 from chord.chord import Chord
-from chord.pitch import Pitch
+from chord.pitch import Pitch, PitchSequence
 
-class Voicing:
+class Voicing(PitchSequence):
     '''An array-like set of tones decribing a chord voicing.
-
-    Uses parallel arrays.  Pythonic?
 
     Attributes:
         chord (Chord): the chord or scale tones.
@@ -28,7 +26,7 @@ class Voicing:
         else:
             self._octave = [0 for _ in self._order]
             # build octaves the put each tone higher than last
-            for i in range(1, len(self)):
+            for i in range(1, len(self._order)):
                 self._octave[i] = self._octave[i-1]
                 if self._compute_pitch(i-1) > self._compute_pitch(i):
                     self._octave[i] += 1
@@ -45,14 +43,7 @@ class Voicing:
         )
 
     def _update(self):
-        self._pitches = [self._compute_pitch(i) for i in range(len(self))]
-
-    def __len__(self):
-        return len(self.order)
-
-    @property
-    def pitches(self):
-        return self._pitches
+        self._pitches = [self._compute_pitch(i) for i in range(len(self._order))]
 
     @property
     def order(self):

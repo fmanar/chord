@@ -1,7 +1,7 @@
 import unittest
 
 from .context import chord
-from chord.pitch import Pitch
+from chord.pitch import Pitch, PitchSequence
 
 class TestPitch(unittest.TestCase):
     def test_init(self):
@@ -73,3 +73,12 @@ class TestPitch(unittest.TestCase):
 
         p1 -= 5
         self.assertEqual(p1, 8)
+
+
+class TestPitchSequence(unittest.TestCase):
+    def test_init(self):
+        ps = PitchSequence(Pitch(0))
+        self.assertIsInstance(ps, PitchSequence)
+
+        ps = PitchSequence([0, 4, 7])
+        self.assertIsInstance(ps, PitchSequence)

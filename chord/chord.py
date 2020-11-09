@@ -1,6 +1,6 @@
-from .pitch import Pitch
+from .pitch import Pitch, PitchSequence
 
-class Chord:
+class Chord(PitchSequence):
     '''An ordered collection of pitches relative to a root.
 
     Can be either an absolute chord or a relative formula. The pitches are
@@ -14,42 +14,35 @@ class Chord:
         >>> c = Chord(['G#', 'B', 'D#'], root='E') # rootless Emaj7
 
     Attributes:
-        pitches (list of Pitch): the absolute pitches that make up the chord.  
-            The formula shifted by the root.
         formula (list of Pitch): the intervals relative to the root.
         root (Pitch): the reference, defaults to first pitch.
         attrib (dict): dictionary of additional attributes
 
     '''
-    def __init__(self, pitches=None, formula=None, root=None, attrib={}):
+    def __init__(self, formula, root=None, attrib={}):
         if root:
-            self.root = Pitch.make(root)
+            self._root = Pitch.make(root)
         else:
-            self.root = Pitch.make(pitches[0])
-        self.formula = [Pitch.make(p) - self.root for p in pitches]
+            self._root = Pitch.make(formula[0])
+        self._formula = PitchSequence(formula)
         self.attrib = attrib
+        self._update()
 
-    @classmethod
-    def make(cls, value):
-        '''A factory method to allow easy casting.'''
-        if isinstance(value, cls):
-            return value
-        else:
-            return Chord(value)
-
-
-    def __len__(self):
-        return len(self.formula)
+    def _update(self):
+        self._pitches = [p + self._root for p in self._formula]
 
     @property
-    def pitches(self):
-        return [p + self.root for p in self.formula]
+    def formula(self):
+        return self._formula
 
-    def __str__(self):
-        tmp = []
-        for p in self.pitches:
-            tmp.append(str(p))
-        return '[' + ', '.join(tmp) + ']'
+    @property
+    def root(self):
+        return self._root
+
+    @root.setter
+    def root(self, value):
+        self._root = Pitch.make(value)
+        self._update()
 
     def __repr__(self):
         return f'Chord({self._notes}, {self.quality.__repr__()}, {self.root}, {self.attrib})'  

@@ -5,21 +5,18 @@ class Instrument:
     def __init__(self, tuning):
         self.tuning = tuning
 
-    def play(self, notes, strings):
-        '''Put notes on the fretboard.
+    def play(self, note, string):
+        '''Put note on the fretboard.
         
         Args:
-            notes (list of int): the set of notes to fret
-            strings (list of int): a parallel array of strings to play them on.
+            note (Pitch): the note to fret.
+            string (int): the string to play it on.
 
         Returns:
-            (list of Pos): the resulting positions
+            (Pos): the resulting positions
 
         '''
-        pos = []
-        for n, s in zip(notes, strings):
-            pos.append(Pos(s, n - self.tuning[s]))
-        return pos
+        return Pos(string, int(note) - self.tuning[string])
 
 class Pos:
     def __init__(self, string, fret):
