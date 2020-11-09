@@ -35,8 +35,14 @@ class Voicing:
         self._update()
 
     def _compute_pitch(self, i):
-        index = (self._order[i] + self._inversion) % len(self.chord)
-        return self.chord.root + self.chord.formula[index] + 12*self._octave[i]
+        index = self._order[i] + self._inversion
+        chord_index = index % len(self.chord)
+        octave_increment = index // len(self.chord)
+        return (
+            self.chord.root 
+            + self.chord.formula[chord_index] 
+            + 12*(self._octave[i] + octave_increment)
+        )
 
     def _update(self):
         self._pitches = [self._compute_pitch(i) for i in range(len(self))]

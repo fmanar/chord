@@ -1,0 +1,5 @@
+- objects or dictionaries?
+- Pitch refernce?
+- too many functions?  Am I doing it wrong? 
+- a Voicing is a Chord is Pattern?  What about a Scale? Or a Diatonic Chord?
+- Casting in Python... and preserving input types.
