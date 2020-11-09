@@ -1,10 +1,11 @@
-from chord.pitch import Pitch
+from .pitch import Pitch
 
 class Chord:
     '''An ordered collection of pitches relative to a root.
 
     Can be either an absolute chord or a relative formula. The pitches are
-    assumed to be monotonically increasing, though this isn't enforced.
+    assumed to be monotonically increasing, though this isn't enforced. Can
+    be constructed by specifying the formula or pitches.
 
     Examples:
         >>> c = Chord([Pitch(0), Pitch(4), Pitch(7)]) # major triad
@@ -13,20 +14,29 @@ class Chord:
         >>> c = Chord(['G#', 'B', 'D#'], root='E') # rootless Emaj7
 
     Attributes:
-        pitches (list of Pitch): the notes that make up the chord shifted by
-            the root.
+        pitches (list of Pitch): the absolute pitches that make up the chord.  
+            The formula shifted by the root.
         formula (list of Pitch): the intervals relative to the root.
         root (Pitch): the reference, defaults to first pitch.
         attrib (dict): dictionary of additional attributes
 
     '''
-    def __init__(self, pitches, root=None, attrib={}):
+    def __init__(self, pitches=None, formula=None, root=None, attrib={}):
         if root:
             self.root = Pitch.make(root)
         else:
             self.root = Pitch.make(pitches[0])
         self.formula = [Pitch.make(p) - self.root for p in pitches]
         self.attrib = attrib
+
+    @classmethod
+    def make(cls, value):
+        '''A factory method to allow easy casting.'''
+        if isinstance(value, cls):
+            return value
+        else:
+            return Chord(value)
+
 
     def __len__(self):
         return len(self.formula)

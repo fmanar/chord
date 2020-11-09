@@ -1,6 +1,7 @@
-import chord
+from chord.chord import Chord
+from chord.pitch import Pitch
 
-class Voicing(Chord):
+class Voicing:
     '''An array-like set of tones decribing a chord voicing.
 
     Uses parallel arrays.  Pythonic?
@@ -20,31 +21,32 @@ class Voicing(Chord):
         if order:
             self._order = order
         else:
-            self._order = [i for i in range(len(chord))]
-            
+            self._order = [i for i in range(len(self.chord))]
+        self._inversion = inversion
         if octave:
             self._octave = octave
         else:
             self._octave = [0 for _ in self._order]
             # build octaves the put each tone higher than last
-            for i in range(1, len(self._order)):
+            for i in range(1, len(self)):
                 self._octave[i] = self._octave[i-1]
-                if ((self.chord[self._order[i-1]] + 12*self._octave[i-1]) 
-                        > (self.chord[self._order[i]] + 12*self._octave[i])):
+                if self._compute_pitch(i-1) > self._compute_pitch(i):
                     self._octave[i] += 1
+        self._update()
 
-        self._inversion = inversion
-        self._compute_notes()
+    def _compute_pitch(self, i):
+        index = (self._order[i] + self._inversion) % len(self.chord)
+        return self.chord.root + self.chord.formula[index] + 12*self._octave[i]
 
-    def _compute_notes(self):
-        for i in range(len(self._order)):
-            index = (self._order[i] + self._inversion) % len(self.chord)
-            value = self.chord.root + self.chord[index] + 12*self._octave[i]
-            self._notes.append(Note(value))
+    def _update(self):
+        self._pitches = [self._compute_pitch(i) for i in range(len(self))]
+
+    def __len__(self):
+        return len(self.order)
 
     @property
-    def notes(self):
-        return _notes
+    def pitches(self):
+        return self._pitches
 
     @property
     def order(self):
@@ -53,16 +55,16 @@ class Voicing(Chord):
     @order.setter
     def order(self, value):
         self._order = value
-        self._compute_notes()
+        self._update()
     
     @property
     def octave(self):
-        return _octave
+        return self._octave
 
     @octave.setter
     def octave(self, value):
         self._octave = value
-        self._compute_notes()
+        self._update()
     
     @property
     def inversion(self):
@@ -71,4 +73,4 @@ class Voicing(Chord):
     @inversion.setter
     def inversion(self, value):
         self._inversion = value
-        self._compute_notes()
+        self._update()
