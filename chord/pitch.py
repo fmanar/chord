@@ -150,48 +150,28 @@ class Pitch:
         return Pitch(-self.pitch, self.attrib)
 
 
-class PitchSequence(collections.abc.MutableSequence):
+class PitchSequence(collections.abc.Sequence):
     '''Stores an list of pitches.
 
     A wrapper around a standard list so that integers and note names are cast
     to Pitch upon entry into the list.
 
     '''
-    def __init__(self, pitches=None, attrib={}):
-        if pitches:
-            try:
-                self._pitches = [Pitch.make(p) for p in pitches]
-            except TypeError:
-                self._pitches = Pitch.make(pitches)
-        else:
-            self._pitches = []
+    def __init__(self, pitches, attrib={}):
+        try:
+            self._pitches = [Pitch.make(p) for p in pitches]
+        except TypeError:
+            self._pitches = [Pitch.make(pitches)]
         self.attrib = attrib
     
     def transposed(self, delta):
         return PitchSequence([p + delta for p in self._pitches], self.attrib)
-
-    @classmethod
-    def make(cls, value):
-        '''A factory method to allow easy casting.'''
-        if isinstance(value, cls):
-            return value
-        else:
-            return PitchSequence(value)
-
-    def insert(self, i, x):
-        self._pitches.insert(i, Pitch.make(x))
 
     def __len__(self):
         return self._pitches.__len__()
 
     def __getitem__(self, i):
         return self._pitches.__getitem__(i)
-
-    def __setitem__(self, i, x):
-        self._pitches.__setitem__(i, Pitch.make(x))
-
-    def __delitem__(self, i):
-        self._pitches.__delitem__(i)
-
+    
     def __str__(self):
         return self._pitches.__str__()

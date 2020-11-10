@@ -21,14 +21,11 @@ class Chord(PitchSequence):
     '''
     def __init__(self, formula, root=None, attrib={}):
         if root:
-            self._root = Pitch.make(root)
+            self._root = root
         else:
-            self._root = Pitch.make(formula[0])
-        self._formula = PitchSequence(formula).transposed(-self._root)
+            self._root = formula[0]
+        self._formula = formula.transposed(-self._root)
         self.attrib = attrib
-        self._update()
-
-    def _update(self):
         self._pitches = [p + self._root for p in self._formula]
 
     @property
@@ -39,10 +36,5 @@ class Chord(PitchSequence):
     def root(self):
         return self._root
 
-    @root.setter
-    def root(self, value):
-        self._root = Pitch.make(value)
-        self._update()
-
     def __repr__(self):
-        return f'Chord({self._notes}, {self.quality.__repr__()}, {self.root}, {self.attrib})'  
+        return f'Chord({self._formula}, {self._root}, {self.attrib})'  

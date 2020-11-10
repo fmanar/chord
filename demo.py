@@ -1,4 +1,4 @@
-from chord.pitch import Pitch
+from chord.pitch import Pitch, PitchSequence
 from chord.chord import Chord
 from chord.voicing import Voicing
 from chord.instrument import Instrument
@@ -6,7 +6,7 @@ from chord.render import to_text
 import chord.render
 
 root = Pitch('G')
-formula = [0, 4, 7]
+formula = PitchSequence([0, 4, 7])
 order = [0, 2, 0, 1]
 strings = [0, 1, 2, 3]
 inversion = 2
@@ -16,7 +16,8 @@ chord = Chord(formula, root=root)
 voicing = Voicing(chord, order=order, inversion=inversion)
 gtr = Instrument(tuning)
 pos = [gtr.play(n, s) for n, s in zip(voicing, strings)]
-print(voicing)
-print(voicing.octave)
-print(*pos)
+print('Chord', voicing.chord)
+print('Order', voicing.order)
+print('Octave', voicing.octave)
+print('Positions', *pos)
 to_text(pos)

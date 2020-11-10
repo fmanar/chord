@@ -24,50 +24,38 @@ class Voicing(PitchSequence):
         if octave:
             self._octave = octave
         else:
-            self._octave = [0 for _ in self._order]
             # build octaves the put each tone higher than last
-            for i in range(1, len(self._order)):
-                self._octave[i] = self._octave[i-1]
-                if self._compute_pitch(i-1) > self._compute_pitch(i):
-                    self._octave[i] += 1
-        self._update()
-
-    def _compute_pitch(self, i):
-        index = self._order[i] + self._inversion
-        chord_index = index % len(self.chord)
-        octave_increment = index // len(self.chord)
-        return (
-            self.chord.root 
-            + self.chord.formula[chord_index] 
-            + 12*(self._octave[i] + octave_increment)
-        )
-
-    def _update(self):
-        self._pitches = [self._compute_pitch(i) for i in range(len(self._order))]
+            self._octave = []
+            last = None
+            for ord in self._order:
+                curr = self.chord[ord]
+                if not last:
+                    self._octave.append(0)
+                elif last > curr:
+                    self._octave.append(1)
+                else:
+                    self._octave.append(self._octave[-1])
+                last = curr
+                
+        self._pitches = []
+        for ord, oct in zip(self._order, self._octave):
+            index = ord + self._inversion
+            chord_index = index % len(self.chord)
+            octave_increment = index // len(self.chord)
+            self._pitches.append(
+                self.chord.root 
+                + self.chord.formula[chord_index] 
+                + 12*(oct + octave_increment)
+            )
 
     @property
     def order(self):
         return self._order
 
-    @order.setter
-    def order(self, value):
-        self._order = value
-        self._update()
-    
     @property
     def octave(self):
         return self._octave
 
-    @octave.setter
-    def octave(self, value):
-        self._octave = value
-        self._update()
-    
     @property
     def inversion(self):
         return _inversion
-
-    @inversion.setter
-    def inversion(self, value):
-        self._inversion = value
-        self._update()
