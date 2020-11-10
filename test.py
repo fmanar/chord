@@ -9,13 +9,13 @@ root = Pitch('G')
 formula = [0, 4, 7]
 order = [0, 2, 0, 1]
 strings = [0, 1, 2, 3]
-inversion = 0
+inversion = 2
 tuning = [0, 5, 10, 15, 20, 25]
 
-chord = Chord(pitches=formula, root=root)
+chord = Chord(formula, root=root)
 voicing = Voicing(chord, order=order, inversion=inversion)
 gtr = Instrument(tuning)
-pos = [gtr.play(n, s) for n, s in zip(voicing.pitches, strings)]
+pos = [gtr.play(n, s) for n, s in zip(voicing, strings)]
 print(voicing)
 print(voicing.octave)
 print(*pos)

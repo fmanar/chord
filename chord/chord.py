@@ -24,7 +24,7 @@ class Chord(PitchSequence):
             self._root = Pitch.make(root)
         else:
             self._root = Pitch.make(formula[0])
-        self._formula = PitchSequence(formula)
+        self._formula = PitchSequence(formula).transposed(-self._root)
         self.attrib = attrib
         self._update()
 
