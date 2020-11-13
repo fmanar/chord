@@ -26,7 +26,7 @@ class Chord:
             last = None
             for ord in self.order:
                 curr = self.formula[ord]
-                if not last:
+                if last is None:
                     self.octave.append(0)
                 elif last > curr:
                     self.octave.append(self.octave[-1] + 1)

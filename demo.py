@@ -1,23 +1,20 @@
-from chord.pitch import Pitch, PitchSequence
-from chord.chord import Chord
-from chord.voicing import Voicing
-from chord.instrument import Instrument
-from chord.render import to_text
+import chord as c
 
-root = Pitch('G')
-formula = PitchSequence([0, 4, 7])
-order = [0, 2, 1]
-strings = [0, 1, 3]
+root = c.pitchify('G2')
+formula = [0, 4, 7]
+order = [0, 1, 2, 0, 2, 0]
+strings = [0, 1, 2, 3, 4, 5]
 inversion = 0
-tuning = [0, 5, 10, 15, 20, 25]
+tunings = c.pitchify(['E2', 'A2', 'D3', 'G3', 'B3', 'E4'])
 
-chord = Chord(formula, root=root)
-voicing = Voicing(chord, order=order, inversion=inversion)
-gtr = Instrument(tuning)
-pos = [gtr.play(n, s) for n, s in zip(voicing, strings)]
-print('Chord', voicing.chord)
-print('Order', voicing.order)
-print('Octave', voicing.octave)
-print('Voicing', voicing)
-print('Positions', *pos)
-to_text(pos)
+crd = c.Chord(formula, order=order, inversion=inversion, root=root)
+pos = c.play(crd.pitches, strings, tunings)
+print(f'Formula   {crd.formula}')
+print(f'Order     {crd.order}')
+print(f'Octave    {crd.octave}')
+print(f'Inversion {crd.inversion}')
+print(f'Root      {crd.root} ({c.depitchify(crd.root)})')
+print(f'Pitches   {crd.pitches} ({c.depitchify(crd.pitches)})')
+print(f'Positions {pos}')
+c.to_tab(pos)
+c.to_grid(pos)
