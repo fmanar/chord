@@ -1,14 +1,16 @@
 import chord as c
 
-root = c.pitchify('G2')
-formula = [0, 4, 7]
-order = [0, 1, 2, 0, 2, 0]
-strings = [0, 1, 2, 3, 4, 5]
-inversion = 0
-tunings = c.pitchify(['E2', 'A2', 'D3', 'G3', 'B3', 'E4'])
-
-crd = c.Chord(formula, order=order, inversion=inversion, root=root)
-pos = c.play(crd.pitches, strings, tunings)
+crd = c.Chord(
+    formula=[0, 4, 7],
+    order=[0, 1, 2, 0, 2, 0],
+    inversion=0,
+    root=c.pitchify('G2'),
+    )
+pos = c.play(
+    pitches=crd.pitches,
+    strings=[0, 1, 2, 3, 4, 5],
+    tunings=c.pitchify(['E2', 'A2', 'D3', 'G3', 'B3', 'E4']),
+    )
 print(f'Formula   {crd.formula}')
 print(f'Order     {crd.order}')
 print(f'Octave    {crd.octave}')
