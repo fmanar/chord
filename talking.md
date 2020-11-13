@@ -14,3 +14,9 @@
 - chord/voicing is or has pitches? IS
 - I'm just putting new names on existing things....
 - python wrappers don't create a setter for lists?!?!?! -> immutable types
+
+
+## Functional Approach
+- notes are numbers in lists
+- positions are tuples
+- chords are dictionaries

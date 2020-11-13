@@ -1,40 +1,50 @@
-from .pitch import Pitch, PitchSequence
-
-class Chord(PitchSequence):
-    '''An ordered collection of pitches relative to a root.
-
-    Can be either an absolute chord or a relative formula. The pitches are
-    assumed to be monotonically increasing, though this isn't enforced. Can
-    be constructed by specifying the formula or pitches.
-
-    Examples:
-        >>> c = Chord([Pitch(0), Pitch(4), Pitch(7)]) # major triad
-        >>> c = Chord([0, 4, 7]) # major triad a different way
-        >>> c = Chord(['C', 'E', 'G']) # Cmaj
-        >>> c = Chord(['G#', 'B', 'D#'], root='E') # rootless Emaj7
+class Chord:
+    '''A chord with fancy options.
 
     Attributes:
-        formula (list of Pitch): the intervals relative to the root.
-        root (Pitch): the reference, defaults to first pitch.
-        attrib (dict): dictionary of additional attributes
-
+        formula (list of int): the chord tones relative to root.
+        order (list of int): the ordering of the formula tones as formula 
+            indexes. Defaults to the formula in order.
+        octave (list of int): the relative octave to place the formula tones.
+            Defaults to making the pitch sequence increasing.
+        inversion (int): increment on the order array
+        root (int): chord's root
     '''
-    def __init__(self, formula, root=None, attrib={}):
-        if root:
-            self._root = root
+    def __init__(self, formula, order=None, octave=None, inversion=0, root=0):
+        self.formula = formula
+
+        if order:
+            self.order = order
         else:
-            self._root = formula[0]
-        self._formula = formula.transposed(-self._root)
-        self.attrib = attrib
-        self._pitches = [p + self._root for p in self._formula]
+            self.order = [i for i in range(len(self.formula))]
+
+        if octave:
+            self.octave = octave
+        else:
+            # build octaves the put each tone higher than last
+            self.octave = []
+            last = None
+            for ord in self.order:
+                curr = self.formula[ord]
+                if not last:
+                    self.octave.append(0)
+                elif last > curr:
+                    self.octave.append(self.octave[-1] + 1)
+                else:
+                    self.octave.append(self.octave[-1])
+                last = curr
+
+        self.inversion = inversion
+        self.root = root
 
     @property
-    def formula(self):
-        return self._formula
-
-    @property
-    def root(self):
-        return self._root
-
-    def __repr__(self):
-        return f'Chord({self._formula}, {self._root}, {self.attrib})'  
+    def pitches(self):
+        pitches = []
+        for ord, oct in zip(self.order, self.octave):
+            index = ord + self.inversion
+            pitches.append(
+                self.root
+                + self.formula[index % len(self.formula)] 
+                + 12*(oct + index // len(self.formula))
+            )
+        return pitches
