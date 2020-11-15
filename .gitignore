@@ -1,6 +1,13 @@
 # vs code folder
 .vscode/
 
+# image output
+*.png
+*.svg
+*.pdf
+
+## Github's python .gitignore
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
